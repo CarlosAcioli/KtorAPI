@@ -1,3 +1,8 @@
 package com.acioli.data.model
 
-data class UserGetRequest()
+import kotlinx.serialization.Serializable
+
+@Serializable
+data class UserGetRequest(
+    val name: String
+)
