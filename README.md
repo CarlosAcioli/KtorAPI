@@ -7,7 +7,7 @@ API created with KTOR framework, for user routes:
 - Delete User
 - Get User
 
-The technologies that is being used is:
+The technologies that is being used:
 - Ktor for developing the API
 - NoSQL MongoDB for storage the users
 - Kotlin programming language
