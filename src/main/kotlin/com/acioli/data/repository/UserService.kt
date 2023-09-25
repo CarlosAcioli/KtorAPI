@@ -7,11 +7,16 @@ import org.litote.kmongo.eq
 class UserService (db: CoroutineDatabase): UserDatasource {
 
     private val users = db.getCollection<User>("Users")
+
     override suspend fun insertUser(user: User): Boolean {
         return users.insertOne(user).wasAcknowledged()
     }
 
     override suspend fun getUserByName(name: String): User? {
         return users.findOne(User::name eq name)
+    }
+
+    override suspend fun deleteUserByName(name: String): Boolean {
+        return users.deleteOne(User::name eq name).wasAcknowledged()
     }
 }

@@ -36,11 +36,11 @@ val userServiceDatabase = UserService(MongoDB().database)
             }
         }
 
-        get("/get-user") {
+        get("/get-user/{user}") {
 
-            val userName = call.receive<UserGetRequest>().name
+            val getUserName = call.parameters["user"].toString()
 
-            val user = userServiceDatabase.getUserByName(userName)
+            val user = userServiceDatabase.getUserByName(getUserName)
 
             user?.let {
 
@@ -51,6 +51,23 @@ val userServiceDatabase = UserService(MongoDB().database)
 
             }?: call.respond( HttpStatusCode.BadRequest, "No user with name" )
 
+
+        }
+
+        post("/user/delete") {
+
+            val receiveUserName = call.receive<UserGetRequest>().name
+
+            val deleteUser = userServiceDatabase.deleteUserByName(receiveUserName)
+
+            deleteUser.let {
+
+                call.respond(
+                    HttpStatusCode.OK,
+                    "User $receiveUserName deleted"
+                )
+
+            }
 
         }
 
