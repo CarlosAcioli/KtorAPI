@@ -54,7 +54,7 @@ val userServiceDatabase = UserService(MongoDB().database)
 
         }
 
-        post("/user/delete") {
+        delete("/user/delete") {
 
             val receiveUserName = call.receive<UserGetRequest>().name
 
