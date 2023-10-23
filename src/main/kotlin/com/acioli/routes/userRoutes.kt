@@ -1,8 +1,9 @@
 package com.acioli.routes
 
-import com.acioli.data.model.User
 import com.acioli.data.model.UserGetRequest
-import com.acioli.data.model.UserRequest
+import com.acioli.data.model.User
+import com.acioli.data.model.UserDeleteRequest
+import com.acioli.data.model.UserPostRequest
 import com.acioli.data.repository.MongoDB
 import com.acioli.data.repository.UserService
 import io.ktor.http.*
@@ -19,7 +20,7 @@ val userServiceDatabase = UserService(MongoDB().database)
     routing {
 
         post("/user") {
-            val request = call.receive<UserRequest>()
+            val request = call.receive<UserPostRequest>()
 
             val user = User(
                 id = ObjectId().toString(),
@@ -29,10 +30,10 @@ val userServiceDatabase = UserService(MongoDB().database)
 
             try {
                 userServiceDatabase.insertUser(user)
-                call.respondText("User posted with sucess", status =  HttpStatusCode.Created)
+                call.respondText(text = "User posted with sucess", status =  HttpStatusCode.Created)
 
             } catch (error: Exception) {
-                call.respondText ( "An error occurred", status = HttpStatusCode.BadRequest )
+                call.respondText (text = "An error occurred", status = HttpStatusCode.BadRequest )
             }
         }
 
@@ -40,33 +41,40 @@ val userServiceDatabase = UserService(MongoDB().database)
 
             val getUserName = call.parameters["user"].toString()
 
-            val user = userServiceDatabase.getUserByName(getUserName)
+            try {
 
-            user?.let {
+                val userProvided = userServiceDatabase.getUserByName(getUserName)
 
-                call.respond(
-                    HttpStatusCode.OK,
-                    it
-                )
+                userProvided?.let { user ->
 
-            }?: call.respond( HttpStatusCode.BadRequest, "No user with name" )
+                    call.respond(message = user, status = HttpStatusCode.OK, )
 
+                }?: call.respondText(text = "No user with name", status = HttpStatusCode.NotFound)
+
+            } catch (e: Exception){
+                call.respondText(text = "An error occurred", status = HttpStatusCode.BadRequest)
+            }
 
         }
 
         delete("/user/delete") {
 
-            val receiveUserName = call.receive<UserGetRequest>().name
+            val receiveUserName = call.receive<UserDeleteRequest>().name
 
-            val deleteUser = userServiceDatabase.deleteUserByName(receiveUserName)
+            try {
 
-            deleteUser.let {
+                val isUserFounded = userServiceDatabase.getUserByName(receiveUserName)
+                val deleteUser = userServiceDatabase.deleteUserByName(receiveUserName)
 
-                call.respond(
-                    HttpStatusCode.OK,
-                    "User $receiveUserName deleted"
-                )
+                if (isUserFounded?.name == receiveUserName) {
 
+                    call.respondText(text = "User $receiveUserName deleted successfully")
+
+
+                } else call.respondText(text = "no user founded")
+
+            } catch (e: Exception) {
+                call.respondText(text = "An error occurred", status = HttpStatusCode.BadRequest)
             }
 
         }
