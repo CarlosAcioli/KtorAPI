@@ -1,14 +1,11 @@
-# Ktor User API
+# Ktor Backend - (Forest Areas)
 
-This API is going to be used within an app to distinguish admin user and a general user, and storage admin users that is going to be created in the app
+This API is going to be used within an app to handle business logic operations with more adaptability and scalability
 
-API created with KTOR framework, for user routes:
-- Create User
-- Delete User
-- Get User
+## ⚙ Construído com quais ferramentas?
 
-The technologies that is being used:
+This application has been created with the following technologies:
+
 - Ktor for developing the API
-- NoSQL MongoDB for storage the users
+- NoSQL MongoDB for storage documents
 - Kotlin programming language
-- AWS Ec2 free tier to deploy the api (not included yet)
